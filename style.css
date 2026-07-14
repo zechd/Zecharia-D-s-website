@@ -1,57 +1,311 @@
-/* A clean, minimal starting point. It's deliberately plain — your prompts will
-   shape how the site actually looks. Edit freely (or just ask the AI to). */
-
 :root {
-  --ink: #1f2937;
-  --muted: #6b7280;
-  --accent: #2563eb;
-  --bg: #ffffff;
+  --sky-top: #fef6e4;
+  --sky-bottom: #ffe0ac;
+  --card-bg: #ffffff;
+  --yaer-a: #35c1e0;
+  --yaer-b: #2e9de0;
+  --tamar-a: #ff8fd6;
+  --tamar-b: #c084fc;
+  --accent: var(--yaer-a);
+  --accent-b: var(--yaer-b);
+  --ink: #2b2340;
+  --shadow: 0 10px 25px rgba(43, 35, 64, 0.12);
+  font-size: 18px;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
 body {
   margin: 0;
-  padding: 0;
-  background: var(--bg);
+  min-height: 100vh;
+  font-family: "Baloo 2", "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 55%, #ffd39e 100%);
   color: var(--ink);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background 0.6s ease;
 }
 
-.shell {
-  max-width: 640px;
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.app {
+  max-width: 560px;
   margin: 0 auto;
-  padding: 18vh 24px 24px;
+  padding: 28px 18px 60px;
 }
 
-.tag {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
-  margin: 0 0 12px;
+.app-header {
+  text-align: center;
+  margin-bottom: 18px;
 }
 
-h1 {
-  font-size: 44px;
-  line-height: 1.1;
-  margin: 0 0 16px;
+.sun {
+  font-size: 48px;
+  animation: bob 3s ease-in-out infinite;
 }
 
-.lead {
-  font-size: 18px;
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(4deg); }
+}
+
+.app-header h1 {
+  margin: 4px 0 2px;
+  font-size: 2rem;
+  letter-spacing: 0.5px;
   color: var(--ink);
-  margin: 0 0 20px;
 }
 
-.hint {
-  font-size: 15px;
-  color: var(--muted);
-  border-top: 1px solid #e5e7eb;
-  padding-top: 16px;
+.today {
+  margin: 0;
+  font-weight: 600;
+  color: #7a6f8f;
+}
+
+.kid-picker {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin: 22px 0;
+}
+
+.kid-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 22px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.kid-btn:hover { transform: translateY(-2px) scale(1.03); }
+
+.kid-btn.active {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, white), white);
+}
+
+.kid-avatar {
+  font-size: 2.2rem;
+}
+
+.board {
+  background: var(--card-bg);
+  border-radius: 26px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.progress-wrap {
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 16px;
+  border-radius: 999px;
+  background: #f0eaf9;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-b));
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  text-align: center;
+  margin-top: 6px;
+  font-weight: 700;
+  color: #7a6f8f;
+  font-size: 0.9rem;
+}
+
+.streak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0 20px;
+  font-weight: 800;
+  color: #b5590a;
+  font-size: 1.05rem;
+}
+
+.streak-flame {
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #faf8ff;
+  border: 2px solid #efe9fb;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+}
+
+.task-item:active { transform: scale(0.98); }
+
+.task-item.done {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, white), #fff);
+  border-color: var(--accent);
+}
+
+.task-emoji {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  width: 42px;
+  text-align: center;
+}
+
+.task-label {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.task-item.done .task-label {
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  color: #8a80a3;
+}
+
+.task-check {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid #ddd3f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: white;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.task-item.done .task-check {
+  background: linear-gradient(135deg, var(--accent), var(--accent-b));
+  border-color: var(--accent);
+  color: white;
+  transform: scale(1.08);
+}
+
+.task-item.pop .task-check {
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1.08); }
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.reset-btn {
+  background: none;
+  border: none;
+  color: #9a8fb5;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.reset-btn:hover { color: var(--accent-b); }
+
+.celebration {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 35, 64, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.celebration.show { display: flex; }
+
+.celebration-card {
+  background: white;
+  border-radius: 26px;
+  padding: 36px 28px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  animation: celebrate-in 0.35s ease;
+}
+
+@keyframes celebrate-in {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.celebration-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.celebration-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.celebration-sub {
+  color: #7a6f8f;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.celebration-close {
+  background: linear-gradient(135deg, var(--accent), var(--accent-b));
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  :root { font-size: 16px; }
+  .app { padding: 20px 12px 50px; }
 }
