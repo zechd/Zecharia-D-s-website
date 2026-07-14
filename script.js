@@ -31,6 +31,71 @@
     { id: "put-on-shoes", label: "Put on shoes", emoji: "👟" }
   ];
 
+  const WISDOM_QUOTES = [
+    "Every new day is a fresh chance to shine.",
+    "Small steps every morning add up to big things.",
+    "Kindness is a superpower anyone can use.",
+    "Mistakes help our brains grow stronger.",
+    "A good morning makes a good day.",
+    "Being helpful makes everyone happier, including you.",
+    "It's okay to try again if something is hard.",
+    "Saying thank you makes the world brighter.",
+    "Brave kids try new things even when they're a little scared.",
+    "A tidy room helps make a calm mind.",
+    "Sharing a smile is like sharing sunshine.",
+    "Good friends are kind, even when it's hard.",
+    "You get better at things by practicing, not by being perfect.",
+    "Listening carefully is a gift you give to others.",
+    "Every job well done, big or small, matters.",
+    "Patience helps you grow big and strong on the inside.",
+    "The world needs your kindness today.",
+    "A deep breath can turn a big feeling into a small one.",
+    "Helping someone else is a great way to feel great yourself.",
+    "Today is a brand new page — make it a good story.",
+    "Being gentle with others starts with being gentle with yourself.",
+    "Curious questions help you learn amazing things.",
+    "A little bit of gratitude makes a big difference.",
+    "You don't have to be the best — just try your best.",
+    "Good habits today build a good you tomorrow.",
+    "Everyone makes mistakes; what matters is trying again.",
+    "Your smile can make someone else's whole day better.",
+    "Being brave doesn't mean you're never scared — it means you try anyway.",
+    "Take care of your body, and it will take care of you.",
+    "The best part of today hasn't happened yet."
+  ];
+
+  const ENCOURAGEMENT_TEMPLATES = [
+    "You've got this, {name}!",
+    "{name}, you are stronger than you think!",
+    "Today is going to be a great day, {name}!",
+    "{name}, I believe in you!",
+    "You make mornings brighter, {name}!",
+    "{name}, you're doing an amazing job growing up!",
+    "Keep shining, {name} — you're doing great!",
+    "{name}, every step you take makes me proud!",
+    "You are loved, {name}, today and every day!",
+    "{name}, your smile can light up the whole house!",
+    "Way to go, {name} — one task at a time!",
+    "{name}, you are kind, brave, and awesome!",
+    "Today's a great day to be you, {name}!",
+    "{name}, small steps today, big dreams tomorrow!",
+    "You're a superstar, {name}!"
+  ];
+
+  function dayOfYear(date) {
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = date - start;
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+  }
+
+  function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+    }
+    return hash;
+  }
+
   const STORAGE_KEY = "sunrise-squad-v1";
 
   function todayStr() {
@@ -103,12 +168,28 @@
   });
 
   const kidThemeLabelEl = document.getElementById("kid-theme-label");
+  const wisdomQuoteEl = document.getElementById("wisdom-quote");
+  const encouragementQuoteEl = document.getElementById("encouragement-quote");
+  const encouragementIconEl = document.getElementById("encouragement-icon");
 
   function applyKidTheme(kidId) {
     const kid = KIDS[kidId];
     document.documentElement.style.setProperty("--accent", kid.colors.a);
     document.documentElement.style.setProperty("--accent-b", kid.colors.b);
     kidThemeLabelEl.textContent = kid.theme;
+  }
+
+  function renderInspiration() {
+    const today = new Date();
+    const dayIndex = dayOfYear(today);
+
+    wisdomQuoteEl.textContent = WISDOM_QUOTES[dayIndex % WISDOM_QUOTES.length];
+
+    const kid = KIDS[currentKid];
+    const seed = hashString(todayStr() + "-" + currentKid);
+    const template = ENCOURAGEMENT_TEMPLATES[seed % ENCOURAGEMENT_TEMPLATES.length];
+    encouragementQuoteEl.textContent = template.replace("{name}", kid.name);
+    encouragementIconEl.textContent = kid.celebrationEmoji;
   }
 
   function renderKidPicker() {
@@ -206,6 +287,7 @@
     applyKidTheme(currentKid);
     renderKidPicker();
     renderTasks();
+    renderInspiration();
   });
 
   resetBtn.addEventListener("click", resetToday);
@@ -306,4 +388,5 @@
   applyKidTheme(currentKid);
   renderKidPicker();
   renderTasks();
+  renderInspiration();
 })();
