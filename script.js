@@ -4,13 +4,19 @@
   const KIDS = {
     yaer: {
       name: "Yaer",
-      avatar: "🦖",
-      colors: { a: "#35c1e0", b: "#2e9de0" }
+      avatar: "🥷",
+      theme: "Ninjago Mode",
+      celebrationEmoji: "🥷",
+      celebrationTitle: "Ninja mission complete, Yaer! ⚡",
+      colors: { a: "#e63946", b: "#7a0c0c" }
     },
     tamar: {
       name: "Tamar",
-      avatar: "🦄",
-      colors: { a: "#ff8fd6", b: "#c084fc" }
+      avatar: "🐱",
+      theme: "Gabby's Dollhouse",
+      celebrationEmoji: "🐱",
+      celebrationTitle: "Gabby says great job, Tamar! 💖",
+      colors: { a: "#ff6fae", b: "#a855f7" }
     }
   };
 
@@ -96,10 +102,13 @@
     day: "numeric"
   });
 
+  const kidThemeLabelEl = document.getElementById("kid-theme-label");
+
   function applyKidTheme(kidId) {
-    const c = KIDS[kidId].colors;
-    document.documentElement.style.setProperty("--accent", c.a);
-    document.documentElement.style.setProperty("--accent-b", c.b);
+    const kid = KIDS[kidId];
+    document.documentElement.style.setProperty("--accent", kid.colors.a);
+    document.documentElement.style.setProperty("--accent-b", kid.colors.b);
+    kidThemeLabelEl.textContent = kid.theme;
   }
 
   function renderKidPicker() {
@@ -174,8 +183,12 @@
     renderTasks();
   }
 
+  const celebrationEmojiEl = document.querySelector(".celebration-emoji");
+
   function celebrate() {
-    celebrationTitleEl.textContent = "Great job, " + KIDS[currentKid].name + "!";
+    const kid = KIDS[currentKid];
+    celebrationTitleEl.textContent = kid.celebrationTitle;
+    celebrationEmojiEl.textContent = kid.celebrationEmoji;
     celebrationEl.classList.add("show");
     launchConfetti();
     playChime(true);
@@ -243,10 +256,14 @@
   window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
 
-  const CONFETTI_COLORS = ["#ff8fd6", "#c084fc", "#35c1e0", "#ffd166", "#06d6a0"];
+  const CONFETTI_THEMES = {
+    yaer: ["#e63946", "#7a0c0c", "#1d1b1e", "#ffd166"],
+    tamar: ["#ff6fae", "#a855f7", "#ffd166", "#ffffff"]
+  };
 
   function launchConfetti() {
     const count = 120;
+    const palette = CONFETTI_THEMES[currentKid] || CONFETTI_THEMES.yaer;
     confettiPieces = [];
     for (let i = 0; i < count; i++) {
       confettiPieces.push({
@@ -255,7 +272,7 @@
         vx: (Math.random() - 0.5) * 3,
         vy: 2 + Math.random() * 3,
         size: 6 + Math.random() * 6,
-        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        color: palette[Math.floor(Math.random() * palette.length)],
         rotation: Math.random() * 360,
         vr: (Math.random() - 0.5) * 10
       });

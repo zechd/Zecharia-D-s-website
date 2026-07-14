@@ -66,6 +66,15 @@ body {
   color: #7a6f8f;
 }
 
+.kid-theme {
+  margin: 4px 0 0;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 .kid-picker {
   display: flex;
   gap: 14px;
